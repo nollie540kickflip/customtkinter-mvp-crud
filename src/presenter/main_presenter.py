@@ -49,6 +49,9 @@ class MainPresenter:
             self.view.show_error("入力エラー", "名前とメールアドレスは必須です。")
             return
 
+        if not self.view.ask_confirmation("確認", "新しいユーザーを追加しますか？"):
+            return
+
         try:
             # 年齢が入力されていれば数値に変換、空ならNoneとして扱う
             age = int(inputs["age"]) if inputs["age"] else None
@@ -78,6 +81,9 @@ class MainPresenter:
             self.view.show_error("入力エラー", "名前とメールアドレスは必須です。")
             return
 
+        if not self.view.ask_confirmation("確認", "選択したユーザーの情報を更新しますか？"):
+            return
+
         try:
             age = int(inputs["age"]) if inputs["age"] else None
             self.model.update(user_id, inputs["name"], inputs["email"], age)
@@ -99,6 +105,9 @@ class MainPresenter:
             self.view.show_error(
                 "選択エラー", "削除するユーザーをテーブルから選択してください。"
             )
+            return
+
+        if not self.view.ask_confirmation("確認", "本当に削除してよろしいですか？"):
             return
 
         try:

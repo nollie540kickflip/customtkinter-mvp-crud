@@ -279,3 +279,18 @@ class MainView(ctk.CTk):
         from tkinter import messagebox
 
         messagebox.showinfo(title, message)
+
+    def ask_confirmation(self, title: str, message: str) -> bool:
+        """
+        確認ダイアログを表示します。
+
+        Args:
+            title (str): ダイアログのタイトル
+            message (str): 表示する確認メッセージ
+
+        Returns:
+            bool: ユーザーが「はい」を選択した場合は True、「いいえ」の場合は False
+        """
+        from tkinter import messagebox
+
+        return messagebox.askyesno(title, message)

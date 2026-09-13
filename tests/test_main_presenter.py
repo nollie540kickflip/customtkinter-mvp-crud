@@ -18,6 +18,8 @@ def mock_model():
 def mock_view():
     """MainViewのモック"""
     view = MagicMock()
+    # 常に「はい」を選択したことにする
+    view.ask_confirmation.return_value = True
     return view
 
 
@@ -50,6 +52,22 @@ def test_handle_add_success(presenter, mock_model, mock_view):
     mock_view.clear_inputs.assert_called_once()
     # 初期化時と合わせて2回呼ばれるはず
     assert mock_model.get_all.call_count == 2
+
+
+def test_handle_add_cancelled(presenter, mock_model, mock_view):
+    """確認ダイアログでキャンセルした場合、追加処理が行われないこと"""
+    mock_view.get_inputs.return_value = {
+        "id": 0,
+        "name": "Hanako",
+        "email": "hanako@example.com",
+        "age": "25",
+    }
+    mock_view.ask_confirmation.return_value = False
+
+    presenter.handle_add()
+
+    mock_model.create.assert_not_called()
+    mock_view.clear_inputs.assert_not_called()
 
 
 def test_handle_add_validation_error(presenter, mock_model, mock_view):
