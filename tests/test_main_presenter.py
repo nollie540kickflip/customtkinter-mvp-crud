@@ -64,7 +64,9 @@ def test_handle_add_validation_error(presenter, mock_model, mock_view):
     presenter.handle_add()
 
     mock_model.create.assert_not_called()
-    mock_view.show_error.assert_called_once_with("入力エラー", "名前とメールアドレスは必須です。")
+    mock_view.show_error.assert_called_once_with(
+        "入力エラー", "名前とメールアドレスは必須です。"
+    )
 
 
 def test_handle_delete_success(presenter, mock_model, mock_view):
