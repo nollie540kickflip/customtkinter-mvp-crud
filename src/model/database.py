@@ -3,11 +3,14 @@ from contextlib import closing
 
 
 def init_db(db_path: str = "app.db") -> None:
-    """Initialize the database and create tables if they do not exist."""
+    """
+    指定されたパスにSQLiteデータベースを初期化し、
+    usersテーブルが存在しない場合は作成します。
+    """
     with (
         closing(sqlite3.connect(db_path)) as conn,
         conn,
-    ):  # Automatically commits on success, rollbacks on exception
+    ):  # 成功時には自動コミット、例外発生時にはロールバックされます
         cursor = conn.cursor()
         cursor.execute(
             """

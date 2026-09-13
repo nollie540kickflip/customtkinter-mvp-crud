@@ -5,13 +5,19 @@ import customtkinter as ctk
 
 
 class MainView(ctk.CTk):
+    """
+    アプリケーションのメイン画面を構築するクラス（View）。
+    ロジックは持たず、ユーザー入力の受け付けと画面の描画のみを担当します。
+    """
+
     def __init__(self):
+        """MainViewを初期化し、UI要素を配置します。"""
         super().__init__()
 
         self.title("MVP CRUD Sample")
         self.geometry("700x500")
 
-        # Callbacks that will be set by the Presenter
+        # Presenter側でセットされるコールバック関数の初期化
         self.on_add = None
         self.on_update = None
         self.on_delete = None
@@ -20,40 +26,39 @@ class MainView(ctk.CTk):
         self._setup_ui()
 
     def _setup_ui(self):
-        # Configure layout
+        """UIのレイアウトとウィジェットの構成を行います。"""
+        # 全体のレイアウト設定
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # --- Left Frame (Form) ---
+        # --- 左側フレーム（入力フォーム） ---
         self.form_frame = ctk.CTkFrame(self, width=250)
         self.form_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ns")
         self.form_frame.grid_propagate(False)
 
         ctk.CTkLabel(
-            self.form_frame,
-            text="User Details",
-            font=ctk.CTkFont(size=16, weight="bold"),
+            self.form_frame, text="User Details", font=ctk.CTkFont(size=16, weight="bold")
         ).pack(pady=(10, 20))
 
-        # ID (Hidden from user, but we store it in a variable)
+        # ID（ユーザーには非表示ですが、更新・削除用に変数として保持します）
         self.selected_user_id = tk.IntVar(value=0)
 
-        # Name
+        # Name（名前）入力フィールド
         ctk.CTkLabel(self.form_frame, text="Name:").pack(anchor="w", padx=10)
         self.name_entry = ctk.CTkEntry(self.form_frame)
         self.name_entry.pack(fill="x", padx=10, pady=(0, 10))
 
-        # Email
+        # Email（メールアドレス）入力フィールド
         ctk.CTkLabel(self.form_frame, text="Email:").pack(anchor="w", padx=10)
         self.email_entry = ctk.CTkEntry(self.form_frame)
         self.email_entry.pack(fill="x", padx=10, pady=(0, 10))
 
-        # Age
+        # Age（年齢）入力フィールド
         ctk.CTkLabel(self.form_frame, text="Age:").pack(anchor="w", padx=10)
         self.age_entry = ctk.CTkEntry(self.form_frame)
         self.age_entry.pack(fill="x", padx=10, pady=(0, 20))
 
-        # Buttons
+        # 各種操作ボタン
         self.btn_add = ctk.CTkButton(
             self.form_frame,
             text="Add",
@@ -85,15 +90,15 @@ class MainView(ctk.CTk):
         )
         self.btn_clear.pack(fill="x", padx=10, pady=20)
 
-        # --- Right Frame (Data Table) ---
+        # --- 右側フレーム（データテーブル表示） ---
         self.table_frame = ctk.CTkFrame(self)
         self.table_frame.grid(row=0, column=1, padx=(0, 10), pady=10, sticky="nsew")
 
-        # Style the Treeview to match CustomTkinter somewhat
+        # CustomTkinterのテーマに合わせて標準のTreeviewのスタイルを調整
         style = ttk.Style(self)
         style.theme_use("default")
 
-        # Configure colors based on appearance mode
+        # 現在のアピアランスモード（Dark/Light）に基づいて色を取得
         bg_color = self._apply_appearance_mode(
             ctk.ThemeManager.theme["CTkFrame"]["fg_color"]
         )
@@ -122,35 +127,38 @@ class MainView(ctk.CTk):
         )
         style.map("Treeview.Heading", background=[("active", bg_color)])
 
-        # Treeview
+        # Treeview（テーブル）の設定
         columns = ("id", "name", "email", "age")
         self.tree = ttk.Treeview(
             self.table_frame, columns=columns, show="headings", style="Treeview"
         )
 
-        # Define headings
+        # カラム見出しの設定
         self.tree.heading("id", text="ID")
         self.tree.heading("name", text="Name")
         self.tree.heading("email", text="Email")
         self.tree.heading("age", text="Age")
 
-        # Define columns
+        # カラム幅と配置の設定
         self.tree.column("id", width=50, anchor="center")
         self.tree.column("name", width=150, anchor="w")
         self.tree.column("email", width=200, anchor="w")
         self.tree.column("age", width=50, anchor="center")
 
-        # Scrollbar
+        # スクロールバーの設定
         scrollbar = ctk.CTkScrollbar(self.table_frame, command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
 
         scrollbar.pack(side="right", fill="y", padx=5, pady=5)
         self.tree.pack(side="left", fill="both", expand=True, padx=5, pady=5)
 
-        # Bind select event
+        # 行を選択した際のイベントバインディング
         self.tree.bind("<<TreeviewSelect>>", self._on_tree_select)
 
     def _on_tree_select(self, event):
+        """
+        テーブルの行が選択された際に、選択されたデータをフォームに反映します。
+        """
         selected_items = self.tree.selection()
         if not selected_items:
             return
@@ -158,15 +166,21 @@ class MainView(ctk.CTk):
         item = self.tree.item(selected_items[0])
         values = item["values"]
 
-        # Populate form
+        # フォームに値をセット
         self.selected_user_id.set(values[0])
         self.set_name(values[1])
         self.set_email(values[2])
         self.set_age(values[3])
 
-    # --- Methods for Presenter ---
+    # --- Presenterから呼び出されるメソッド群 ---
 
-    def get_inputs(self):
+    def get_inputs(self) -> dict:
+        """
+        現在フォームに入力されている値を取得します。
+        
+        Returns:
+            dict: 入力値の辞書 (id, name, email, age)
+        """
         return {
             "id": self.selected_user_id.get(),
             "name": self.name_entry.get().strip(),
@@ -174,45 +188,69 @@ class MainView(ctk.CTk):
             "age": self.age_entry.get().strip(),
         }
 
-    def set_name(self, value):
+    def set_name(self, value: str):
+        """名前入力フィールドに値をセットします。"""
         self.name_entry.delete(0, tk.END)
         self.name_entry.insert(0, str(value))
 
-    def set_email(self, value):
+    def set_email(self, value: str):
+        """メールアドレス入力フィールドに値をセットします。"""
         self.email_entry.delete(0, tk.END)
         self.email_entry.insert(0, str(value))
 
-    def set_age(self, value):
+    def set_age(self, value: str):
+        """年齢入力フィールドに値をセットします。"""
         self.age_entry.delete(0, tk.END)
         self.age_entry.insert(0, str(value))
 
     def clear_inputs(self):
+        """すべての入力フィールドをクリアし、テーブルの選択状態を解除します。"""
         self.selected_user_id.set(0)
         self.name_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
         self.age_entry.delete(0, tk.END)
-        # Deselect treeview
+        # テーブルの選択を解除
         for item in self.tree.selection():
             self.tree.selection_remove(item)
 
-    def display_users(self, users):
-        # Clear existing items
+    def display_users(self, users: list[tuple]):
+        """
+        テーブルにユーザー情報を表示します。
+        既存の表示データはすべてクリアされます。
+        
+        Args:
+            users (list[tuple]): 表示するユーザーデータのリスト
+        """
+        # 既存のアイテムをクリア
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # Insert new items
+        # 新しいアイテムを追加
         for user in users:
             self.tree.insert("", tk.END, values=user)
 
-    def show_error(self, title, message):
-        # In a real app, use CTkMessagebox or similar.
-        # For simplicity, we just print to console or create a simple toplevel.
-        # Using a simple tkinter messagebox for ease.
+    def show_error(self, title: str, message: str):
+        """
+        エラーメッセージダイアログを表示します。
+        
+        Args:
+            title (str): ダイアログのタイトル
+            message (str): 表示するエラーメッセージ
+        """
+        # 実際のアプリではCTkMessagebox等の利用が推奨されますが、
+        # ここでは簡易的にtkinter標準のメッセージボックスを使用します
         from tkinter import messagebox
 
         messagebox.showerror(title, message)
 
-    def show_info(self, title, message):
+    def show_info(self, title: str, message: str):
+        """
+        情報メッセージダイアログを表示します。
+        
+        Args:
+            title (str): ダイアログのタイトル
+            message (str): 表示するメッセージ
+        """
         from tkinter import messagebox
 
         messagebox.showinfo(title, message)

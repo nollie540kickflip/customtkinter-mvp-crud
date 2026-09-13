@@ -5,25 +5,29 @@ from src.model.user_model import UserModel
 from src.presenter.main_presenter import MainPresenter
 from src.view.main_view import MainView
 
+# アプリケーションで使用するデータベースのファイルパス
 DB_PATH = "app.db"
 
 
 def main() -> None:
-    # Set global appearance mode and color theme
-    ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-    ctk.set_default_color_theme(
-        "blue"
-    )  # Themes: "blue" (standard), "green", "dark-blue"
+    """
+    アプリケーションのメインエントリーポイント。
+    テーマの設定、データベースの初期化、MVP各コンポーネントのセットアップを行い、
+    アプリケーションを起動します。
+    """
+    # CustomTkinterの全体的な外観とカラーテーマを設定
+    ctk.set_appearance_mode("System")  # モード: "System" (OSに依存), "Dark", "Light"
+    ctk.set_default_color_theme("blue")  # テーマ: "blue" (標準), "green", "dark-blue"
 
-    # Initialize the database and table
+    # データベースとテーブルの初期化
     init_db(DB_PATH)
 
-    # Initialize MVP components
+    # MVPアーキテクチャの各コンポーネントを初期化
     model = UserModel(DB_PATH)
     view = MainView()
     presenter = MainPresenter(model, view)
 
-    # Start the application
+    # アプリケーションのメインループを開始
     presenter.run()
 
 
