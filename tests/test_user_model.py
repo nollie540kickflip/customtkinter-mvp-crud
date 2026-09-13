@@ -1,21 +1,22 @@
+import os
+import tempfile
+from collections.abc import Generator
+
 import pytest
 
 from src.model.database import init_db
 from src.model.user_model import UserModel
 
 
-import tempfile
-import os
-
 @pytest.fixture
-def model() -> UserModel:
+def model() -> Generator[UserModel]:
     """テスト用の一時ファイルDBを使用するUserModelのフィクスチャ"""
     fd, db_path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
-    
+
     init_db(db_path)
     yield UserModel(db_path)
-    
+
     # テスト後にファイルを削除
     if os.path.exists(db_path):
         os.remove(db_path)
