@@ -1,3 +1,5 @@
+import sqlite3
+
 from src.model.user_model import UserModel
 from src.view.main_view import MainView
 
@@ -20,7 +22,7 @@ class MainPresenter:
         try:
             users = self.model.get_all()
             self.view.display_users(users)
-        except Exception as e:
+        except sqlite3.Error as e:
             self.view.show_error("Database Error", f"Failed to load data:\n{e}")
 
     def handle_add(self) -> None:
@@ -38,7 +40,7 @@ class MainPresenter:
             self.refresh_data()
         except ValueError:
             self.view.show_error("Validation Error", "Age must be a valid number.")
-        except Exception as e:
+        except sqlite3.Error as e:
             self.view.show_error("Database Error", f"Failed to add user:\n{e}")
 
     def handle_update(self) -> None:
@@ -60,7 +62,7 @@ class MainPresenter:
             self.refresh_data()
         except ValueError:
             self.view.show_error("Validation Error", "Age must be a valid number.")
-        except Exception as e:
+        except sqlite3.Error as e:
             self.view.show_error("Database Error", f"Failed to update user:\n{e}")
 
     def handle_delete(self) -> None:
@@ -75,7 +77,7 @@ class MainPresenter:
             self.model.delete(user_id)
             self.view.clear_inputs()
             self.refresh_data()
-        except Exception as e:
+        except sqlite3.Error as e:
             self.view.show_error("Database Error", f"Failed to delete user:\n{e}")
 
     def handle_clear(self) -> None:
