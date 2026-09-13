@@ -12,3 +12,6 @@ wheels/
 # Database
 *.db
 *.sqlite3
+
+# PyInstaller
+*.spec
