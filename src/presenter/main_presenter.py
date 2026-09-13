@@ -36,7 +36,9 @@ class MainPresenter:
             users = self.model.get_all()
             self.view.display_users(users)
         except sqlite3.Error as e:
-            self.view.show_error("データベースエラー", f"データの読み込みに失敗しました:\n{e}")
+            self.view.show_error(
+                "データベースエラー", f"データの読み込みに失敗しました:\n{e}"
+            )
 
     def handle_add(self) -> None:
         """追加ボタンが押された際の処理を行います。"""
@@ -56,7 +58,9 @@ class MainPresenter:
         except ValueError:
             self.view.show_error("入力エラー", "年齢には有効な数値を入力してください。")
         except sqlite3.Error as e:
-            self.view.show_error("データベースエラー", f"ユーザーの追加に失敗しました:\n{e}")
+            self.view.show_error(
+                "データベースエラー", f"ユーザーの追加に失敗しました:\n{e}"
+            )
 
     def handle_update(self) -> None:
         """更新ボタンが押された際の処理を行います。"""
@@ -64,7 +68,9 @@ class MainPresenter:
         user_id = inputs["id"]
 
         if user_id == 0:
-            self.view.show_error("選択エラー", "更新するユーザーをテーブルから選択してください。")
+            self.view.show_error(
+                "選択エラー", "更新するユーザーをテーブルから選択してください。"
+            )
             return
 
         # 入力値のバリデーション
@@ -80,7 +86,9 @@ class MainPresenter:
         except ValueError:
             self.view.show_error("入力エラー", "年齢には有効な数値を入力してください。")
         except sqlite3.Error as e:
-            self.view.show_error("データベースエラー", f"ユーザーの更新に失敗しました:\n{e}")
+            self.view.show_error(
+                "データベースエラー", f"ユーザーの更新に失敗しました:\n{e}"
+            )
 
     def handle_delete(self) -> None:
         """削除ボタンが押された際の処理を行います。"""
@@ -88,7 +96,9 @@ class MainPresenter:
         user_id = inputs["id"]
 
         if user_id == 0:
-            self.view.show_error("選択エラー", "削除するユーザーをテーブルから選択してください。")
+            self.view.show_error(
+                "選択エラー", "削除するユーザーをテーブルから選択してください。"
+            )
             return
 
         try:
@@ -96,7 +106,9 @@ class MainPresenter:
             self.view.clear_inputs()
             self.refresh_data()
         except sqlite3.Error as e:
-            self.view.show_error("データベースエラー", f"ユーザーの削除に失敗しました:\n{e}")
+            self.view.show_error(
+                "データベースエラー", f"ユーザーの削除に失敗しました:\n{e}"
+            )
 
     def handle_clear(self) -> None:
         """クリアボタンが押された際、フォームの内容をリセットします。"""

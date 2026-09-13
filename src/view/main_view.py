@@ -37,7 +37,9 @@ class MainView(ctk.CTk):
         self.form_frame.grid_propagate(False)
 
         ctk.CTkLabel(
-            self.form_frame, text="User Details", font=ctk.CTkFont(size=16, weight="bold")
+            self.form_frame,
+            text="User Details",
+            font=ctk.CTkFont(size=16, weight="bold"),
         ).pack(pady=(10, 20))
 
         # ID（ユーザーには非表示ですが、更新・削除用に変数として保持します）
@@ -177,7 +179,7 @@ class MainView(ctk.CTk):
     def get_inputs(self) -> dict:
         """
         現在フォームに入力されている値を取得します。
-        
+
         Returns:
             dict: 入力値の辞書 (id, name, email, age)
         """
@@ -217,7 +219,7 @@ class MainView(ctk.CTk):
         """
         テーブルにユーザー情報を表示します。
         既存の表示データはすべてクリアされます。
-        
+
         Args:
             users (list[tuple]): 表示するユーザーデータのリスト
         """
@@ -232,7 +234,7 @@ class MainView(ctk.CTk):
     def show_error(self, title: str, message: str):
         """
         エラーメッセージダイアログを表示します。
-        
+
         Args:
             title (str): ダイアログのタイトル
             message (str): 表示するエラーメッセージ
@@ -246,7 +248,7 @@ class MainView(ctk.CTk):
     def show_info(self, title: str, message: str):
         """
         情報メッセージダイアログを表示します。
-        
+
         Args:
             title (str): ダイアログのタイトル
             message (str): 表示するメッセージ
