@@ -16,10 +16,10 @@ CustomTkinterとMVP (Model-View-Presenter) パターンを用いた、SQLiteテ�
 ```mermaid
 flowchart LR
     %% ノードの定義
-    V[View\n(main_view.py)]
-    P[Presenter\n(main_presenter.py)]
-    M[Model\n(user_model.py, database.py)]
-    DB[(SQLite DB)]
+    V["View\n(main_view.py)"]
+    P["Presenter\n(main_presenter.py)"]
+    M["Model\n(user_model.py, database.py)"]
+    DB[("SQLite DB")]
 
     %% 関係性の定義
     V -- 1. ボタンクリック等\nイベント通知 --> P
