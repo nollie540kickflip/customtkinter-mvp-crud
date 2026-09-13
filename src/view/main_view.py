@@ -135,11 +135,13 @@ class MainView(ctk.CTk):
             self.table_frame, columns=columns, show="headings", style="Treeview"
         )
 
-        # カラム見出しの設定
-        self.tree.heading("id", text="ID")
-        self.tree.heading("name", text="Name")
-        self.tree.heading("email", text="Email")
-        self.tree.heading("age", text="Age")
+        # カラム見出しの設定時にソートコマンドをバインド
+        for col in columns:
+            self.tree.heading(
+                col,
+                text=col.capitalize() if col != "id" else "ID",
+                command=lambda c=col: self._sort_by_column(c, False),
+            )
 
         # カラム幅と配置の設定
         self.tree.column("id", width=50, anchor="center")
@@ -173,6 +175,27 @@ class MainView(ctk.CTk):
         self.set_name(values[1])
         self.set_email(values[2])
         self.set_age(values[3])
+
+    def _sort_by_column(self, col: str, reverse: bool):
+        """指定された列でテーブルのデータをソートします。"""
+        # 現在表示されている全データを取得
+        items = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]
+
+        # IDや年齢など数値の列は数値として比較する
+        if col in ("id", "age"):
+            items.sort(
+                key=lambda t: int(t[0]) if t[0] and str(t[0]).isdigit() else 0,
+                reverse=reverse,
+            )
+        else:
+            items.sort(reverse=reverse)
+
+        # ソート結果に従ってアイテムを並び替え
+        for index, (_, k) in enumerate(items):
+            self.tree.move(k, "", index)
+
+        # 次回クリック時は昇順/降順を逆にするようにコマンドを更新
+        self.tree.heading(col, command=lambda: self._sort_by_column(col, not reverse))
 
     # --- Presenterから呼び出されるメソッド群 ---
 
