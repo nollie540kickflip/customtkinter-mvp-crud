@@ -35,3 +35,4 @@ CustomTkinterとMVP (Model-View-Presenter) パターンを用いた、SQLiteテ�
 ## 動作確認
 アプリケーションを起動すると、データベース (`app.db`) が自動的に作成されます。
 GUI上からユーザー情報の追加、更新、削除を行うことができます。
+

@@ -1,4 +1,4 @@
-from database import get_connection
+from src.model.database import get_connection
 
 
 class UserModel:

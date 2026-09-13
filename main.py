@@ -1,9 +1,9 @@
 import customtkinter as ctk
 
-from database import init_db
-from main_presenter import MainPresenter
-from main_view import MainView
-from user_model import UserModel
+from src.model.database import init_db
+from src.model.user_model import UserModel
+from src.view.main_view import MainView
+from src.presenter.main_presenter import MainPresenter
 
 
 def main():
